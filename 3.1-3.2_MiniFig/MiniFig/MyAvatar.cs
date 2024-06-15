@@ -1,6 +1,6 @@
 namespace MiniFig;
 
-static class Program
+static class MyAvatar
 {
     /// <summary>
     ///  The main entry point for the application.
