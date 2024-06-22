@@ -603,9 +603,9 @@ namespace MiniFig
 
 		}
 
-		/**
-		* Helper method for port from java. Fills a Rounded rectangle
-		*/
+		/// <summary>
+        /// Helper method for port from java. Fills a Rounded rectangle
+        /// </summary>
 		private void FillRoundedRectangle(Graphics g, Brush brush, int x, int y, int width, int height, int radius)
 		{
 			GraphicsPath path = new GraphicsPath();
@@ -618,9 +618,10 @@ namespace MiniFig
 			g.FillPath(brush, path);
 		}
 
-		/**
-		* Helper method for port from java. Draws a Rounded rectangle
-		*/
+		
+        /// <summary>
+        /// Helper method for port from java. Draws a Rounded rectangle
+        /// </summary>
 		private void DrawRoundedRectangle(Graphics g, Pen pen, int x, int y, int width, int height, int radius)
 		{
 			GraphicsPath path = new GraphicsPath();
@@ -632,6 +633,213 @@ namespace MiniFig
 
 			g.DrawPath(pen, path);
 		}
+        /// <summary>
+        /// Change the color of the MiniFig head to the specified value. MiniFig
+	    ///must be redrawn for the color change to take affect.
+        ///</summary>
+	    ///<param name="headColor">   the headColor to set </param>
+        public void SetHeadColor(Color headColor)
+        {
+            this.headColor = headColor;
+        }
+        
+        /// <summary>
+        /// Change the color of the MiniFig torso to the specified value. MiniFig
+        /// must be redrawn for the color change to take effect.
+        /// </summary>
+        /// <param name="torsoColor">The torso color to set.</param>
+        public void SetTorsoColor(Color torsoColor)
+        {
+            this.torsoColor = torsoColor;
+        }
 
+        /// <summary>
+        /// Change the color of the MiniFig belt to the specified value. MiniFig
+        /// must be redrawn for the color change to take effect.
+        /// </summary>
+        /// <param name="beltColor">The belt color to set.</param>
+        public void SetBeltColor(Color beltColor)
+        {
+            this.beltColor = beltColor;
+        }
+
+        /// <summary>
+        /// Change the color of the MiniFig legs to the specified value. MiniFig
+        /// must be redrawn for the color change to take effect.
+        /// </summary>
+        /// <param name="legColor">The leg color to set.</param>
+        public void SetLegColor(Color legColor)
+        {
+            this.legColor = legColor;
+        }
+
+        /// <summary>
+        /// Change the color of the MiniFig feet to the specified value. MiniFig
+        /// must be redrawn for the color change to take effect.
+        /// </summary>
+        /// <param name="footColor">The foot color to set.</param>
+        public void SetFootColor(Color footColor)
+        {
+            this.footColor = footColor;
+        }
+
+        /// <summary>
+        /// Change the color of the MiniFig arms to the specified value. MiniFig
+        /// must be redrawn for the color change to take effect.
+        /// </summary>
+        /// <param name="armColor">The arm color to set.</param>
+        public void SetArmColor(Color armColor)
+        {
+            this.armColor = armColor;
+        }
+
+        /// <summary>
+        /// Change the color of the MiniFig hands to the specified value. MiniFig
+        /// must be redrawn for the color change to take effect.
+        /// </summary>
+        /// <param name="handColor">The hand color to set.</param>
+        public void SetHandColor(Color handColor)
+        {
+            this.handColor = handColor;
+        }
+
+        /// <summary>
+        /// Change the color of the center of the hands to the specified value. MiniFig
+        /// must be redrawn for the color change to take effect.
+        /// </summary>
+        /// <param name="handHoleColor">The hand hole color to set.</param>
+        public void SetHandHoleColor(Color handHoleColor)
+        {
+            this.handHoleColor = handHoleColor;
+        }
+
+        /// <summary>
+        /// Change the color of the MiniFig eyes to the specified value. MiniFig
+        /// must be redrawn for the color change to take effect.
+        /// </summary>
+        /// <param name="eyeColor">The eye color to set.</param>
+        public void SetEyeColor(Color eyeColor)
+        {
+            this.eyeColor = eyeColor;
+        }
+
+        /// <summary>
+        /// Change the color of the MiniFig outline to the specified value. MiniFig
+        /// must be redrawn for the color change to take effect.
+        /// </summary>
+        /// <param name="outlineColor">The outline color to set.</param>
+        public void SetOutlineColor(Color outlineColor)
+        {
+            this.outlineColor = outlineColor;
+        }
+
+        /// <summary>
+        /// Get the Point (x,y) representing the top of the face.
+        /// </summary>
+        /// <returns>The cap point.</returns>
+        public Point GetCapPoint()
+        {
+            return new Point(this.mid, this.top + this.knobHeight);
+        }
+
+        /// <summary>
+        /// Get the Point (x,y) representing the center of the left hand from the
+        /// MiniFig's perspective.
+        /// </summary>
+        /// <returns>The center Point of the left hand.</returns>
+        public Point GetLeftHandCenterPoint()
+        {
+            return new Point(this.leftHandAnchor.X + this.handDiameter / 2, this.leftHandAnchor.Y + this.handDiameter / 2);
+        }
+
+        /// <summary>
+        /// Get the Point (x,y) representing the center of the right hand from the
+        /// MiniFig's perspective.
+        /// </summary>
+        /// <returns>The center Point of the right hand.</returns>
+        public Point GetRightHandCenterPoint()
+        {
+            return new Point(this.rightHandAnchor.X + this.handDiameter / 2, this.rightHandAnchor.Y + this.handDiameter / 2);
+        }
+
+        /// <summary>
+        /// Get the Point (x,y) representing the right shoulder from the 
+        /// MiniFig's perspective.
+        /// </summary>
+        /// <returns>The right shoulder point.</returns>
+        public Point GetRightShoulderPoint()
+        {
+            return rightShoulder;
+        }
+
+        /// <summary>
+        /// Get the Point (x,y) representing the left shoulder from the 
+        /// MiniFig's perspective.
+        /// </summary>
+        /// <returns>The left shoulder point.</returns>
+        public Point GetLeftShoulderPoint()
+        {
+            return leftShoulder;
+        }
+
+        /// <summary>
+        /// Get the total height of the MiniFig, measured from the top of 
+        /// the knob to the bottom of the feet.
+        /// </summary>
+        /// <returns>The total height of MiniFig.</returns>
+        public int GetHeight()
+        {
+            int totalHeight = this.leftInnerAnkle.Y + this.footHeight - this.top;
+            return totalHeight;
+        }
+
+        /// <summary>
+        /// Get the total width of the MiniFig, measured from the outside 
+        /// edge of the right hand to the outside edge of the left hand.
+        /// </summary>
+        /// <returns>The total width of MiniFig.</returns>
+        public int GetWidth()
+        {
+            int totalWidth = this.leftHandAnchor.X + this.handDiameter - this.rightHandAnchor.X;
+            return totalWidth;
+        }
+
+        /// <summary>
+        /// Get the Point (x,y) representing the top middle of the MiniFig. This
+        /// Point is actually the same as the anchor point that is specified
+        /// when the MiniFig is created.
+        /// </summary>
+        /// <returns>A point along the middle axis of the MiniFig at the top.</returns>
+        public Point GetTopMidPoint()
+        {
+            return new Point(this.mid, this.top);
+        }
+
+        /// <summary>
+        /// Get the Point (x,y) representing the bottom middle of the MiniFig.
+        /// </summary>
+        /// <returns>A point along the middle axis of the MiniFig at the base.</returns>
+        public Point GetBaseMidPoint()
+        {
+            return new Point(this.mid, this.leftInnerAnkle.Y + this.footHeight);
+        }
+
+        /// <summary>
+        /// Get the height of the MiniFig's face.
+        /// </summary>
+        /// <returns>The height of the MiniFig face.</returns>
+        public int GetFaceHeight()
+        {
+            return this.faceHeight;
+        }
+
+        /// <summary>
+        /// Get the width of the MiniFig's face.
+        /// </summary>
+        /// <returns>The width of the MiniFig face.</returns>
+        public int GetFaceWidth()
+        {
+            return this.faceWidth;
+        }
     }
 }
