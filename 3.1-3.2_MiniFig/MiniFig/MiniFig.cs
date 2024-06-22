@@ -488,10 +488,12 @@ namespace MiniFig
             leftWaist,
             rightWaist
             };
-        using(Brush torsoBrush = new SolidBrush(torsoColor)){
+        using(Brush torsoBrush = new SolidBrush(torsoColor))
+        {
             canvas.FillPolygon(torsoBrush,torsoPoints);
         }
-        using( Pen outlinePen = new Pen(outlineColor)){
+        using( Pen outlinePen = new Pen(outlineColor))
+        {
             canvas.DrawPolygon(outlinePen,torsoPoints);
         }
         /* 
@@ -503,10 +505,12 @@ namespace MiniFig
             rightWristHandInner,
             rightWristHandOuter
             };
-        using(Brush wristBrush = new SolidBrush(handColor)){
+        using(Brush wristBrush = new SolidBrush(handColor))
+        {
             canvas.FillPolygon(wristBrush,rightWristPoints);
         }
-        using(Pen outlinePen = new Pen(outlineColor)){
+        using(Pen outlinePen = new Pen(outlineColor))
+        {
             canvas.DrawPolygon(outlinePen,rightWristPoints);
         }
         Point[] leftWristPoints = { 
@@ -515,12 +519,87 @@ namespace MiniFig
             leftWristHandInner,
             leftWristHandOuter
             };
-        using(Brush wristBrush = new SolidBrush(handColor)){
+        using(Brush wristBrush = new SolidBrush(handColor))
+        {
             canvas.FillPolygon(wristBrush,leftWristPoints);
         }
-        using(Pen outlinePen = new Pen(outlineColor)){
+        using(Pen outlinePen = new Pen(outlineColor))
+        {
             canvas.DrawPolygon(outlinePen,leftWristPoints);
         }
+
+        /* 
+		 * Component:  Hands
+		 */
+         //left hand
+        var state = canvas.Save();
+
+        // Translate to the hand's anchor point
+        canvas.TranslateTransform(leftHandAnchor.X + handDiameter / 2, leftHandAnchor.Y + handDiameter / 2);
+
+        // Rotate the canvas by 170 degrees to have hand face down instead of up
+        canvas.RotateTransform(170);
+
+        // Translate back
+        canvas.TranslateTransform(-(leftHandAnchor.X + handDiameter / 2), -(leftHandAnchor.Y + handDiameter / 2));
+
+       
+        using (Brush handBrush = new SolidBrush(handColor))
+        {
+            canvas.FillPie(handBrush, leftHandAnchor.X, leftHandAnchor.Y, handDiameter, handDiameter, -45, 290);
+        }
+
+        using (Brush handHoleBrush = new SolidBrush(handHoleColor))
+        {
+            int handHoleX = leftHandAnchor.X + (handDiameter - handHoleDiameter) / 2;
+            int handHoleY = leftHandAnchor.Y + (handDiameter - handHoleDiameter) / 2;
+            canvas.FillEllipse(handHoleBrush, handHoleX, handHoleY, handHoleDiameter, handHoleDiameter);
+        }
+
+        using (Pen outlinePen = new Pen(outlineColor))
+        {
+            canvas.DrawArc(outlinePen, leftHandAnchor.X, leftHandAnchor.Y, handDiameter, handDiameter, -45, 290);
+            int handHoleX = leftHandAnchor.X + (handDiameter - handHoleDiameter) / 2;
+            int handHoleY = leftHandAnchor.Y + (handDiameter - handHoleDiameter) / 2;
+            canvas.DrawArc(outlinePen, handHoleX, handHoleY, handHoleDiameter, handHoleDiameter, -45, 290);
+        }
+        // Restore the state of the canvas
+        canvas.Restore(state);
+
+        //right hand
+        state = canvas.Save();
+
+        // Translate to the hand's anchor point
+        canvas.TranslateTransform(rightHandAnchor.X + handDiameter / 2, rightHandAnchor.Y + handDiameter / 2);
+
+        // Rotate the canvas by 185 degrees to have hand face down instead of up and account for righthand side of the canvas
+        canvas.RotateTransform(185);
+
+        // Translate back
+        canvas.TranslateTransform(-(rightHandAnchor.X + handDiameter / 2), -(rightHandAnchor.Y + handDiameter / 2));
+        using (Brush handBrush = new SolidBrush(handColor))
+        {
+            canvas.FillPie(handBrush, rightHandAnchor.X, rightHandAnchor.Y, handDiameter, handDiameter, -60, 290);
+        }
+
+        using (Brush handHoleBrush = new SolidBrush(handHoleColor))
+        {
+            int handHoleX = rightHandAnchor.X + (handDiameter - handHoleDiameter) / 2;
+            int handHoleY = rightHandAnchor.Y + (handDiameter - handHoleDiameter) / 2;
+            canvas.FillEllipse(handHoleBrush, handHoleX, handHoleY, handHoleDiameter, handHoleDiameter);
+        }
+
+        using (Pen outlinePen = new Pen(outlineColor))
+        {
+            canvas.DrawArc(outlinePen, rightHandAnchor.X, rightHandAnchor.Y, handDiameter, handDiameter, -60, 290);
+            int handHoleX = rightHandAnchor.X + (handDiameter - handHoleDiameter) / 2;
+            int handHoleY = rightHandAnchor.Y + (handDiameter - handHoleDiameter) / 2;
+            canvas.DrawArc(outlinePen, handHoleX, handHoleY, handHoleDiameter, handHoleDiameter, -60, 290);
+        }
+
+        // Restore the state of the canvas
+        canvas.Restore(state);
+         
 
 		}
 
