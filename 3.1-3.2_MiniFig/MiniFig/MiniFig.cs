@@ -188,42 +188,114 @@ namespace MiniFig
         /// <summary>
         /// Helper method to initialize anchor points and dimensions for arms.
         /// </summary>
-        private void InitializeArms()
-        {
-            armUpperWidth = (int)(30 * scaleFactor);
-            armUpperHeight = (int)(76 * scaleFactor);
-            armCuffWidth = (int)(16 * scaleFactor);
-            rightArmAnchor = rightShoulder;
-            rightArmSleeve = new Point(rightArmAnchor.X - armUpperWidth, rightArmAnchor.Y);
-            rightArmElbow = new Point(rightArmSleeve.X, rightArmSleeve.Y + armUpperHeight);
-            rightArmCuffOuter = new Point(rightArmElbow.X + armCuffWidth, rightArmElbow.Y);
-            rightArmCuffInner = new Point(rightArmCuffOuter.X, rightArmCuffOuter.Y + armCuffWidth);
-            rightArmPit = new Point(rightArmAnchor.X, rightArmAnchor.Y + armCuffWidth);
-            leftArmAnchor = leftShoulder;
-            leftArmSleeve = new Point(leftArmAnchor.X + armUpperWidth, leftArmAnchor.Y);
-            leftArmElbow = new Point(leftArmSleeve.X, leftArmSleeve.Y + armUpperHeight);
-            leftArmCuffOuter = new Point(leftArmElbow.X - armCuffWidth, leftArmElbow.Y);
-            leftArmCuffInner = new Point(leftArmCuffOuter.X, leftArmCuffOuter.Y + armCuffWidth);
-            leftArmPit = new Point(leftArmAnchor.X, leftArmAnchor.Y + armCuffWidth);
-            rightWristCuffOuter = new Point(rightArmCuffOuter.X - armCuffWidth, rightArmCuffOuter.Y);
-            rightWristCuffInner = new Point(rightWristCuffOuter.X, rightWristCuffOuter.Y + armCuffWidth);
-            rightWristHandOuter = new Point(rightWristCuffInner.X - armCuffWidth, rightWristCuffInner.Y);
-            rightWristHandInner = new Point(rightWristHandOuter.X, rightWristHandOuter.Y + armCuffWidth);
-            leftWristCuffOuter = new Point(leftArmCuffOuter.X + armCuffWidth, leftArmCuffOuter.Y);
-            leftWristCuffInner = new Point(leftWristCuffOuter.X, leftWristCuffOuter.Y + armCuffWidth);
-            leftWristHandOuter = new Point(leftWristCuffInner.X + armCuffWidth, leftWristCuffInner.Y);
-            leftWristHandInner = new Point(leftWristHandOuter.X, leftWristHandOuter.Y + armCuffWidth);
-        }
+    private void InitializeArms()
+    {
+        armUpperWidth = (int)(31 * scaleFactor);
+        armUpperHeight = (int)(20 * scaleFactor);
+        armCuffWidth = (int)(35 * scaleFactor);
+        
+        int armShoulderYOffset = rightShoulder.Y + (int)(8 * scaleFactor);
+        int armElbowYOffset = armShoulderYOffset + (int)(58 * scaleFactor);
+        int armUpperCuffYOffset = armElbowYOffset + (int)(34 * scaleFactor);
+        int armLowerCuffYOffset = armElbowYOffset + (int)(38 * scaleFactor);
+        
+        rightArmAnchor = new Point(mid - (torsoShoulderWidth / 2 + armUpperWidth), armShoulderYOffset);
+        rightArmSleeve = new Point(rightArmAnchor.X - (int)(2 * scaleFactor), rightArmAnchor.Y + armUpperHeight - (int)(2 * scaleFactor));
+        rightArmElbow = new Point(rightArmAnchor.X - (int)(18 * scaleFactor), armElbowYOffset);
+        rightArmCuffOuter = new Point(rightArmAnchor.X - (int)(24 * scaleFactor), armUpperCuffYOffset);
+        rightArmCuffInner = new Point(rightArmCuffOuter.X + armCuffWidth, armLowerCuffYOffset);
+        rightArmPit = new Point(rightArmAnchor.X + armUpperWidth, rightArmAnchor.Y);
+        
+        leftArmAnchor = new Point(mid + (torsoShoulderWidth / 2 - armUpperWidth), armShoulderYOffset);
+        leftArmSleeve = new Point(leftArmAnchor.X + armUpperWidth * 2 + (int)(2 * scaleFactor), leftArmAnchor.Y + armUpperHeight - (int)(2 * scaleFactor));
+        leftArmElbow = new Point(leftArmAnchor.X + armUpperWidth * 2 + (int)(18 * scaleFactor), armElbowYOffset);
+        leftArmCuffOuter = new Point(leftArmAnchor.X + armUpperWidth * 2 + (int)(24 * scaleFactor), armUpperCuffYOffset);
+        leftArmCuffInner = new Point(leftArmAnchor.X + armUpperWidth + (int)(20 * scaleFactor), armLowerCuffYOffset);
+        leftArmPit = new Point(leftArmAnchor.X + armUpperWidth, leftArmAnchor.Y);
+    }
+
 
         /// <summary>
         /// Helper method to initialize anchor points and dimensions for hands.
         /// </summary>
         private void InitializeHands()
         {
-            handDiameter = (int)(24 * scaleFactor);
-            handHoleDiameter = (int)(8 * scaleFactor);
-            leftHandAnchor = new Point(leftWristHandOuter.X - handDiameter / 2, leftWristHandOuter.Y + handDiameter / 2);
-            rightHandAnchor = new Point(rightWristHandOuter.X - handDiameter / 2, rightWristHandOuter.Y + handDiameter / 2);
+            int wristLength = (int)(15 * scaleFactor);
+            
+            // Calculate width of cuff using Pythagorean Theorem
+            double cuffWidth = Math.Sqrt(Math.Pow(Math.Abs(rightArmCuffOuter.X - rightArmCuffInner.X), 2) +
+                                        Math.Pow(Math.Abs(rightArmCuffOuter.Y - rightArmCuffInner.Y), 2));
+
+            // Right Wrist
+            double rightCuffSlope = ((double)rightArmCuffOuter.Y - rightArmCuffInner.Y) / (rightArmCuffOuter.X - rightArmCuffInner.X);
+            double rightCuffAngle = Math.Atan(rightCuffSlope);
+
+            // Distance from outer cuff edge to outer wrist edge (1/5 cuffWidth)
+            double rightWristDist1 = cuffWidth / 5.0;
+            // Distance from outer cuff edge to inner wrist edge (4/5 cuffWidth)
+            double rightWristDist2 = 4 * cuffWidth / 5.0;
+
+            // Use trig functions to calculate x,y components of Points required to draw wrist perpendicular to cuff on arm
+            rightWristCuffOuter = new Point(
+                (int)(rightArmCuffOuter.X - (rightWristDist1 * (rightArmCuffOuter.X - rightArmCuffInner.X)) / cuffWidth),
+                (int)(rightArmCuffOuter.Y - (rightWristDist1 * (rightArmCuffOuter.Y - rightArmCuffInner.Y)) / cuffWidth)
+            );
+
+            rightWristCuffInner = new Point(
+                (int)(rightArmCuffOuter.X - (rightWristDist2 * (rightArmCuffOuter.X - rightArmCuffInner.X)) / cuffWidth),
+                (int)(rightArmCuffOuter.Y - (rightWristDist2 * (rightArmCuffOuter.Y - rightArmCuffInner.Y)) / cuffWidth)
+            );
+
+            rightWristHandOuter = new Point(
+                (int)(rightWristCuffOuter.X + wristLength * Math.Cos(rightCuffAngle + Math.PI / 2.0)),
+                (int)(rightWristCuffOuter.Y + wristLength * Math.Sin(rightCuffAngle + Math.PI / 2.0))
+            );
+
+            rightWristHandInner = new Point(
+                (int)(rightWristCuffInner.X + wristLength * Math.Cos(rightCuffAngle + Math.PI / 2.0)),
+                (int)(rightWristCuffInner.Y + wristLength * Math.Sin(rightCuffAngle + Math.PI / 2.0))
+            );
+
+            // Left Wrist
+            double leftCuffSlope = ((double)leftArmCuffOuter.Y - leftArmCuffInner.Y) / (leftArmCuffOuter.X - leftArmCuffInner.X);
+            double leftCuffAngle = Math.Atan(leftCuffSlope);
+
+            // Distance from outer cuff edge to outer wrist edge (1/5 cuffWidth)
+            double leftWristDist1 = cuffWidth / 5.0;
+            // Distance from outer cuff edge to inner wrist edge (4/5 cuffWidth)
+            double leftWristDist2 = 4 * cuffWidth / 5.0;
+
+            // Use trig functions to calculate x,y components of Points required to draw wrist perpendicular to cuff on arm
+            leftWristCuffOuter = new Point(
+                (int)(leftArmCuffOuter.X - (leftWristDist1 * (leftArmCuffOuter.X - leftArmCuffInner.X)) / cuffWidth),
+                (int)(leftArmCuffOuter.Y - (leftWristDist1 * (leftArmCuffOuter.Y - leftArmCuffInner.Y)) / cuffWidth)
+            );
+
+            leftWristCuffInner = new Point(
+                (int)(leftArmCuffOuter.X - (leftWristDist2 * (leftArmCuffOuter.X - leftArmCuffInner.X)) / cuffWidth),
+                (int)(leftArmCuffOuter.Y - (leftWristDist2 * (leftArmCuffOuter.Y - leftArmCuffInner.Y)) / cuffWidth)
+            );
+
+            leftWristHandOuter = new Point(
+                (int)(leftWristCuffOuter.X + wristLength * Math.Cos(leftCuffAngle + Math.PI / 2.0)) + 1,
+                (int)(leftWristCuffOuter.Y + wristLength * Math.Sin(leftCuffAngle + Math.PI / 2.0))
+            );
+
+            leftWristHandInner = new Point(
+                (int)(leftWristCuffInner.X + wristLength * Math.Cos(leftCuffAngle + Math.PI / 2.0)) + 1,
+                (int)(leftWristCuffInner.Y + wristLength * Math.Sin(leftCuffAngle + Math.PI / 2.0))
+            );
+
+            // Calculate scaled hand dimensions and position offsets
+            handDiameter = (int)(45 * scaleFactor);
+            handHoleDiameter = (int)(30 * scaleFactor);
+            int leftHandXShift = (int)(-30 * scaleFactor);
+            int leftHandYShift = (int)(-1 * scaleFactor);
+            int rightHandXShift = (int)(-16 * scaleFactor);
+            int rightHandYShift = (int)(-1 * scaleFactor);
+
+            leftHandAnchor = new Point(leftWristHandOuter.X + leftHandXShift, leftWristHandOuter.Y + leftHandYShift);
+            rightHandAnchor = new Point(rightWristHandOuter.X + rightHandXShift, rightWristHandOuter.Y + rightHandYShift);
         }
 
         /// <summary>
@@ -239,7 +311,217 @@ namespace MiniFig
 			{
 				FillRoundedRectangle(canvas, headBrush, knobAnchor.X, knobAnchor.Y, knobWidth, knobHeightPadded, knobCurve);
 			}
-			
+			using (Pen outlinePen = new Pen(outlineColor))
+			{
+				DrawRoundedRectangle(canvas, outlinePen, knobAnchor.X, knobAnchor.Y, knobWidth, knobHeightPadded, knobCurve);
+			}
+			// Calculate eye positions based upon scaled dimensions and anchor point
+			int leftEyeXOffset = mid - (eyeSpacing / 2 + eyeDiameter / 2);
+			int rightEyeXOffset = mid + (eyeSpacing / 2 - eyeDiameter / 2);
+			int eyeYOffset = faceAnchor.Y + eyeDistFromTopOfFace;
+			int mouthXOffset = mid - mouthOvalDiameter / 2;
+			int mouthYOffset = faceAnchor.Y + mouthDistFromTopOfFace;
+
+			// Draw the face components on the canvas
+			using (Brush faceBrush = new SolidBrush(headColor))
+			{
+				FillRoundedRectangle(canvas,faceBrush,faceAnchor.X,faceAnchor.Y,faceWidth,faceHeight,faceCurve);
+			}
+			using (Pen outlinePen = new Pen(outlineColor))
+			{
+				DrawRoundedRectangle(canvas, outlinePen,faceAnchor.X,faceAnchor.Y,faceWidth,faceHeight,faceCurve);
+			}
+			using (Brush eyeBrush = new SolidBrush(eyeColor))
+			{
+				canvas.FillEllipse(eyeBrush, leftEyeXOffset, eyeYOffset, eyeDiameter, eyeDiameter); // left eye
+            	canvas.FillEllipse(eyeBrush, rightEyeXOffset, eyeYOffset, eyeDiameter, eyeDiameter); // right eye
+			}
+			using (Pen outlinePen = new Pen(outlineColor))
+			{
+				canvas.DrawArc(outlinePen, mouthXOffset, mouthYOffset, mouthOvalDiameter, mouthOvalDiameter, 45, 90); // mouth
+			}
+
+			// Draw the neck component on the canvas
+			using (Brush neckBrush = new SolidBrush(headColor))
+			{
+				canvas.FillRectangle(neckBrush, neckAnchor.X, neckAnchor.Y, neckWidth, neckHeight);
+			}
+			using (Pen outlinePen = new Pen(outlineColor))
+			{
+				canvas.DrawRectangle(outlinePen, neckAnchor.X, neckAnchor.Y, neckWidth, neckHeight);
+			}
+
+			/*
+			* Component: Belt
+			*/
+			// Draw the belt component on the canvas
+			using (Brush beltBrush = new SolidBrush(beltColor))
+			{
+				canvas.FillRectangle(beltBrush, beltAnchor.X, beltAnchor.Y, beltWidth, beltHeight);
+			}
+			using (Pen outlinePen = new Pen(outlineColor))
+			{
+				canvas.DrawRectangle(outlinePen, beltAnchor.X, beltAnchor.Y, beltWidth, beltHeight);
+			}
+
+			/* 
+			* Component: Legs
+			*/
+			// Draw the right leg components on the canvas
+			Point[] rightLegPoints = { rightHip, rightInseam, rightInnerAnkle, rightOuterAnkle };
+			using (Brush legBrush = new SolidBrush(legColor))
+			{
+				canvas.FillPolygon(legBrush, rightLegPoints);
+			}
+			using (Pen outlinePen = new Pen(outlineColor))
+			{
+				canvas.DrawPolygon(outlinePen, rightLegPoints);
+			}
+			using (Brush footBrush = new SolidBrush(footColor))
+			{
+				canvas.FillRectangle(footBrush, rightOuterAnkle.X, rightOuterAnkle.Y, footWidth, footHeight);
+			}
+			using (Pen outlinePen = new Pen(outlineColor))
+			{
+				canvas.DrawRectangle(outlinePen, rightOuterAnkle.X, rightOuterAnkle.Y, footWidth, footHeight);
+			}
+
+			// Draw the left leg components on the canvas
+			Point[] leftLegPoints = { leftHip, leftInseam, leftInnerAnkle, leftOuterAnkle };
+			using (Brush legBrush = new SolidBrush(legColor))
+			{
+				canvas.FillPolygon(legBrush, leftLegPoints);
+			}
+			using (Pen outlinePen = new Pen(outlineColor))
+			{
+				canvas.DrawPolygon(outlinePen, leftLegPoints);
+			}
+			using (Brush footBrush = new SolidBrush(footColor))
+			{
+				canvas.FillRectangle(footBrush, leftInnerAnkle.X, leftInnerAnkle.Y, footWidth, footHeight);
+			}
+			using (Pen outlinePen = new Pen(outlineColor))
+			{
+				canvas.DrawRectangle(outlinePen, leftInnerAnkle.X, leftInnerAnkle.Y, footWidth, footHeight);
+			}
+
+			// Draw the leg divider components on the canvas
+			using (Brush footBrush = new SolidBrush(footColor))
+			{
+				canvas.FillRectangle(footBrush, legDividerAnchor.X, legDividerAnchor.Y, legDividerWidth, legDividerHeight);
+			}
+			using (Pen outlinePen = new Pen(outlineColor))
+			{
+				canvas.DrawRectangle(outlinePen, legDividerAnchor.X, legDividerAnchor.Y, legDividerWidth, legDividerHeight);
+			}
+
+        /* 
+		 * Component: Arms
+		 */
+		// Create a new Polygon object for the right arm using the above Points
+        Point[] rightArmPoints = {
+            rightArmSleeve,
+            rightArmElbow,
+            rightArmCuffOuter,
+            rightArmCuffInner,
+            rightArmPit
+        };
+
+        // Draw the right arm components on the canvas
+        using (Brush armBrush = new SolidBrush(armColor))
+        {
+            canvas.FillPolygon(armBrush, rightArmPoints);
+        }
+        
+        using (Pen outlinePen = new Pen(outlineColor))
+        {
+            canvas.DrawPolygon(outlinePen, rightArmPoints);
+        }
+        
+        using (Brush armBrush = new SolidBrush(armColor))
+        {
+            canvas.FillPie(armBrush, rightArmAnchor.X-2, rightArmAnchor.Y+2, armUpperWidth * 2, armUpperHeight * 2, -90, -90);
+        }
+        
+        using (Pen outlinePen = new Pen(outlineColor))
+        {
+            canvas.DrawArc(outlinePen, rightArmAnchor.X-2, rightArmAnchor.Y+2, armUpperWidth * 2, armUpperHeight * 2, -90, -85);
+        }
+    
+    // Create a new Polygon object for the left arm using the above Points
+        Point[] leftArmPoints = {
+            leftArmSleeve,
+            leftArmElbow,
+            leftArmCuffOuter,
+            leftArmCuffInner,
+            leftArmPit
+        };
+
+        // Draw the left arm components on the canvas
+        using (Brush armBrush = new SolidBrush(armColor))
+        {
+            canvas.FillPolygon(armBrush, leftArmPoints);
+        }
+        
+        using (Pen outlinePen = new Pen(outlineColor))
+        {
+            canvas.DrawPolygon(outlinePen, leftArmPoints);
+        }
+        
+        using (Brush armBrush = new SolidBrush(armColor))
+        {
+            canvas.FillPie(armBrush, leftArmAnchor.X+5, leftArmAnchor.Y, armUpperWidth * 2, armUpperHeight * 2, -90, 90);
+        }
+        
+        using (Pen outlinePen = new Pen(outlineColor))
+        {
+            canvas.DrawArc(outlinePen, leftArmAnchor.X+2, leftArmAnchor.Y, armUpperWidth * 2, armUpperHeight * 2, -90, 85);
+        }
+
+        /* 
+		 * Component: Torso 
+		 */
+		// Create a new Polygon object for the torso using the above Points
+        Point[] torsoPoints = { 
+            rightShoulder,
+            leftShoulder,
+            leftWaist,
+            rightWaist
+            };
+        using(Brush torsoBrush = new SolidBrush(torsoColor)){
+            canvas.FillPolygon(torsoBrush,torsoPoints);
+        }
+        using( Pen outlinePen = new Pen(outlineColor)){
+            canvas.DrawPolygon(outlinePen,torsoPoints);
+        }
+        /* 
+		 * Components: Wrists
+		 */
+         Point[] rightWristPoints = { 
+            rightWristCuffOuter,
+            rightWristCuffInner,
+            rightWristHandInner,
+            rightWristHandOuter
+            };
+        using(Brush wristBrush = new SolidBrush(handColor)){
+            canvas.FillPolygon(wristBrush,rightWristPoints);
+        }
+        using(Pen outlinePen = new Pen(outlineColor)){
+            canvas.DrawPolygon(outlinePen,rightWristPoints);
+        }
+        Point[] leftWristPoints = { 
+            leftWristCuffOuter,
+            leftWristCuffInner,
+            leftWristHandInner,
+            leftWristHandOuter
+            };
+        using(Brush wristBrush = new SolidBrush(handColor)){
+            canvas.FillPolygon(wristBrush,leftWristPoints);
+        }
+        using(Pen outlinePen = new Pen(outlineColor)){
+            canvas.DrawPolygon(outlinePen,leftWristPoints);
+        }
+
 		}
 
 		/**
