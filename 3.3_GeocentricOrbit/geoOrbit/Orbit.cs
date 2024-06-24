@@ -62,22 +62,35 @@ namespace geoOrbit
             page.DrawImage(EARTH_ICON,earthX - earthRadius, earthY - earthRadius, 
 				    earthRadius * 2, earthRadius * 2);
            
-            // TODO: Define orbit radius
+                       // TODO: Define orbit radius
 		    // HINT: What is the difference between radius and diameter?
-            
+            int orbitRadius = Math.Min(width/3,height/3);
             // TODO: Draw orbit path
-            
+            using (Pen orbitPen = new Pen(Color.Black))
+            {
+                page.DrawEllipse(orbitPen, earthX - orbitRadius,earthY - orbitRadius,orbitRadius*2,orbitRadius*2);
+            }
             // TODO: Define the radius of your object
+            int objectRadius = earthRadius /5;
 		
             // TODO: Calculate x and y using Math.sin and Math.cos.
             // HINT: The Math.sin and Math.cos methods use radians for the parameter units. orbitTheta is in degrees.  
             //       Try using the Math.toRadians() method to convert orbitTheta from degrees to radians. This will 
             //       smooth out the orbit of your object.
+            int objectX = (int) (earthX+orbitRadius * Math.Cos(this.orbitTheta *(Math.PI /180)));
+            int objectY = (int) (earthY - orbitRadius * Math.Sin(this.orbitTheta *(Math.PI /180)));
+            objectX = objectX-objectRadius;
+            objectY = objectY-objectRadius;
             
            
             
             // TODO: Create a random color and draw your object as an oval with that random color.
-           
+            Random r = new Random();
+            Color rcolor = Color.FromArgb(r.Next(256),r.Next(256),r.Next(256));
+            using(Brush objectBrush = new SolidBrush(rcolor))
+            {
+                page.FillEllipse(objectBrush,objectX,objectY,objectRadius*2,objectRadius*2);
+            }
             // Add to theta (for animation)
 		    this.orbitTheta = orbitTheta + orbitTDelta;
             
