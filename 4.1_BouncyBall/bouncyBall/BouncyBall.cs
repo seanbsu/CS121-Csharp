@@ -9,7 +9,7 @@ public class BouncyBall : Panel
 	private Color color;                // initial ball color
 
 	private int x, y;                   // ball anchor point coordinates
-	private int xDelta, yDelta;         // change in x and y from one step to the next
+	private int xDelta, yDelta,radiusDelta;         // change in x and y from one step to the next
 
 	private int radius = 10;            // ball radius
 
@@ -29,13 +29,37 @@ public class BouncyBall : Panel
             x += xDelta;
             // TODO: Add conditional statements to keep ball in bounds
             //       in the x axis (e.g. left and right edges)
+            radius += radiusDelta;
+            if(radius < 0){
+                radius =1;
+                radiusDelta = -radiusDelta;
+            }
+            if(x-radius < 0)
+            {
+                xDelta=-xDelta;
+                x=radius;
+                radiusDelta = -radiusDelta;
 
+            }else if(x+radius > width)
+            {
+                xDelta =-xDelta;
+                x=width-radius;
+                radiusDelta = -radiusDelta;
+            }
 
             // Calculate new y anchor point value
             y += yDelta;
             // TODO: Add conditional statements to keep ball in bounds
             //       in the y axis (e.g. top and bottom edges)
-
+            if(y-radius < 0){
+                yDelta = -yDelta;
+                y=radius;
+                radiusDelta = -radiusDelta;
+            }else if(y+radius > height){
+                yDelta = -yDelta;
+                y= height-radius;
+                radiusDelta = -radiusDelta;
+            }
 
             
             // Paint the ball at the calculated anchor point
@@ -56,7 +80,8 @@ public class BouncyBall : Panel
 
             // Initialize ball color
 		    // TODO: replace with random starting color.
-            color = Color.Red;
+            Random r = new Random();
+            color = Color.FromArgb(r.Next(256),r.Next(256),r.Next(256));
 
             // Initialize ball anchor point within panel bounds
             // TODO: replace centered starting point with a random
@@ -64,12 +89,13 @@ public class BouncyBall : Panel
             // extend out of bounds, so you'll need to take RADIUS
             // into account. Use INIT_WIDTH and INIT_HEIGHT as the
             // screen width and height.
-            x = INIT_WIDTH/2;
-            y = INIT_HEIGHT/2;
+            x = r.Next(INIT_WIDTH-radius);
+            y = r.Next(INIT_HEIGHT-radius);
 
             // Initialize deltas for x and y
             xDelta = 5;
             yDelta = 5;
+            radiusDelta = 1;
             
              System.Windows.Forms.Timer timer = new System.Windows.Forms.Timer();
             timer.Interval = DELAY;
@@ -80,6 +106,7 @@ public class BouncyBall : Panel
 
          private void OnTick(object sender, EventArgs e)
         {
+            radius+=radiusDelta;
             this.Invalidate();// Triggers the Paint event
         }
 
