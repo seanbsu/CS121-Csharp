@@ -5,7 +5,7 @@ public class DoubleComparison
         const double TOLERANCE = 0.0000000000000001;
         double result = 1.0 - 0.9;
 		double expected = 0.1;
-		if(result == expected)
+		if(Math.Abs(result - expected) < TOLERANCE)
 		{
 			Console.WriteLine("They are equal!");
 		}
