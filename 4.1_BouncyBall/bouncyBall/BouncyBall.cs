@@ -71,7 +71,7 @@ public class BouncyBall : Panel
             xDelta = 5;
             yDelta = 5;
             
-             System.Windows.Forms.Timer timer = new System.Windows.Forms.Timer();
+            System.Windows.Forms.Timer timer = new System.Windows.Forms.Timer();
             timer.Interval = DELAY;
             timer.Tick += new EventHandler(OnTick);
             timer.Start();
