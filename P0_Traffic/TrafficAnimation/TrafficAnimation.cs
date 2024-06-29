@@ -31,6 +31,8 @@ public class TrafficAnimation:Panel
 	private int stepSize = 10;
 
     private readonly Color BACKGROUND_COLOR = Color.Black;
+    private readonly Color SKY_COLOR = Color.FromArgb(51,255,255);
+    private readonly Color GRASS_COLOR = Color.Green;
 
     /// <summary>
     ///  Constructor for the display panel initializes necessary variables.
@@ -66,28 +68,97 @@ public class TrafficAnimation:Panel
         int height = this.ClientSize.Height;
         this.Dock = DockStyle.Fill;
 
+        //unit for drawing
+        double unit = Math.Min(width,height)/20;
+
         // Fill the graphics page with the background color.
         using(Brush canvasBrush = new SolidBrush(BACKGROUND_COLOR))
         {
             g.FillRectangle(canvasBrush,0,0,width,height);
         }
 
+        // This sets and draws the sky
+         using(Brush canvasBrush = new SolidBrush(SKY_COLOR))
+        {
+            g.FillRectangle(canvasBrush,0,0,width,height/4);
+        }
+
+        //=====================================================
+		//Grass
+		//=====================================================
+		//This set grass and draws the grass under the road
+		int grassBelowX = 0;
+		int grassBelowY = height * 3/4;
+		int grassBelowH = height / 4;
+
+        using(Brush canvasBrush = new SolidBrush(GRASS_COLOR))
+        {
+            g.FillRectangle(canvasBrush,grassBelowX,grassBelowY, width, grassBelowH);
+        }
+
+        //Grass above road
+		int grassAboveX = 0;
+		int grassAboveY = height / 4;
+		int grassAboveH = height / 8;
+
+        using(Brush canvasBrush = new SolidBrush(GRASS_COLOR))
+        {
+            g.FillRectangle(canvasBrush,grassAboveX,grassAboveY, width, grassAboveH);
+        }
+        //=====================================================
+		//Road
+		//=====================================================
+		//This sets the and colors the road
+        int roadX = 0;
+		int roadY = height/4 + (int)unit * 2;
+        using(Brush canvasBrush = new SolidBrush(BACKGROUND_COLOR))
+        {
+            g.FillRectangle(canvasBrush,roadX, roadY, width, (int)unit*8);
+        }
+
         // Calculate the new xOffset position of the moving object.
 		xOffset  = (xOffset + stepSize) % width;
 
-        // This draws a green square. Replace it with your own object.
-		int squareW = height/5;
-		int squareH = squareW; 
-		int squareX = xOffset;
-		int squareY = height/2 - squareW/2;
-
-        using(Brush squareBrush = new SolidBrush(Color.Green))
+        //=====================================================
+		//Truck
+		//=====================================================
+		
+		// Draw Truck body
+		int truckW = (int)unit * 10;
+		int truckH = (int)unit * 4; 
+		int truckX = xOffset;
+		int truckY = height/2;
+        using(Brush squareBrush = new SolidBrush(Color.Red))
         {
-            g.FillRectangle(squareBrush,squareX, squareY,squareW,squareH);
+            g.FillRectangle(squareBrush,truckX, truckY, truckW , truckH);
         }
 
-        // TODO: Use width, height, and xOffset to draw your scalable objects
-		// at their new positions on the screen
+        // draws and positions front of truck
+		int frontX = truckX + (int) unit * 10;
+		int frontY = truckY + (int)unit * 1;
+		int frontW = truckW/3;
+		int frontH = truckH - (int)unit*1;
+
+        using(Brush squareBrush = new SolidBrush(Color.Blue))
+        {
+            g.FillRectangle(squareBrush,frontX, frontY, frontW, frontH);
+        }
+        
+        
+        //draw wheel 1 and fill in color
+		int wheel1X = xOffset + (int)unit * 2;
+		int wheel1Y = height * 6/10 + (int)unit;
+        using(Brush wheelBrush = new SolidBrush(Color.Gray))
+        {
+            g.FillEllipse(wheelBrush,wheel1X, wheel1Y, (int)unit * 3/2, (int)unit * 3/2);
+        }
+
+        int wheel2X = xOffset + (int)(unit) * 7;
+		int wheel2Y = height * 6/10  +(int)(unit) ;
+        using(Brush wheelBrush = new SolidBrush(Color.Gray))
+        {
+            g.FillEllipse(wheelBrush,wheel2X, wheel2Y, (int)unit * 3/2, (int)unit * 3/2);
+        }
 
     }
 
